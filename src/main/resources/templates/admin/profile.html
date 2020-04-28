@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+  <meta charset="UTF-8">
+  <title>Your Profile</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<th:block th:include="/_header"> </th:block>
+<th:block th:include="/_menu"> </th:block>
+
+<div class="page-title">Your Profile</div>
+<div class="account-container">
+  <ul>
+    <li>User Name: <span th:utext="${user.username}"></span></li>
+    <li>Email: <span th:utext="${user.email}"></span></li>
+    <li>Role:
+      <ul>
+        <li th:each="role : ${user.roles}" th:utext="${role.name}"></li>
+      </ul>
+    </li>
+
+  </ul>
+</div>
+
+<th:block th:include="/_footer"> </th:block>
+
+</body>
+</html>

@@ -1,0 +1,34 @@
+<div class="header-container"
+     xmlns:th="http://www.thymeleaf.org"
+     xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
+  <div class="site-name">
+    <a href="./"><img th:src="@{/images/logo.jpg}" class="img-responsive" width="40" alt="Logo"/></a>
+    FoodToGo
+  </div>
+
+  <div class="header-bar">
+    <th:block sec:authorize="isAuthenticated()">
+      Hello
+      <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+        <a th:href="@{/admin/profile}" th:utext="${#request.userPrincipal.name}">..</a>
+        &nbsp;|&nbsp;
+      </th:block>
+      <th:block sec:authorize="hasRole('ROLE_VENDOR')">
+        <a th:href="@{/vendor/profile}" th:utext="${#request.userPrincipal.name}">..</a>
+        &nbsp;|&nbsp;
+      </th:block>
+      <th:block sec:authorize="hasRole('ROLE_CUSTOMER')">
+        <a th:href="@{/customer/profile}" th:utext="${#request.userPrincipal.name}">..</a>
+        &nbsp;|&nbsp;
+      </th:block>
+      <a th:href="@{/logout}">Logout</a>
+    </th:block>
+    <th:block sec:authorize="!isAuthenticated()">
+      <a th:href="@{/login}">Login</a> |
+      <a th:href="@{/registerVendor}">Register Vendor</a> |
+      <a th:href="@{/registerCustomer}">Register Customer</a>
+    </th:block>
+  </div>
+
+</div>

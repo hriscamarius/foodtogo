@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User List</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+</head>
+<body>
+<th:block th:include="/_header"> </th:block>
+<th:block th:include="/_menu"> </th:block>
+
+<div class="page-title">User List</div>
+  <table class="table">
+    <thead>
+      <tr>
+        <th> User ID</th>
+        <th> Username</th>
+        <th> Email</th>
+        <th> Roles</th>
+        <th> Edit </th>
+        <th> Delete </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr th:each="user : ${userList}">
+        <td><span th:text="${user.id}"> Title </span></td>
+        <td><span th:text="${user.username}"> Username </span></td>
+        <td><span th:text="${user.email}"> Email </span></td>
+        <td>
+          <ul th:each="role : ${user.roles}">
+            <li th:text="${role.name}"> | </li>
+          </ul>
+        </td>
+        <td><a th:href="@{/admin/edit/{id}(id=${user.id})}">Edit</a></td>
+        <td><a th:href="@{/admin/delete/{id}(id=${user.id})}">Delete</a></td>
+      </tr>
+    </tbody>
+  </table>
+<br/>
+<th:block th:include="/_footer"> </th:block>
+
+</body>
+</html>

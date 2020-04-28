@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>All Products</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+</head>
+<body>
+<th:block th:include="/_header"> </th:block>
+<th:block th:include="/_menu"> </th:block>
+
+<div class="page-title">All Products</div>
+
+<table class="table table-bordered table-condensed">
+  <thead>
+  <tr>
+    <th> Product ID</th>
+    <th> Product Name</th>
+    <th> Ingredients</th>
+    <th> Category</th>
+    <th> Restaurant Name</th>
+    <th> Price</th>
+    <th> Date Created</th>
+    <th> Edit </th>
+    <th> Delete </th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:if="${productList.empty}">
+    <td colspan="2"> No Products Available</td>
+  </tr>
+  <tr th:each="product : ${productList}">
+    <td th:text="${product.id}"> Product ID </td>
+    <td th:text="${product.name}"> Product Name </td>
+    <td th:text="${product.ingredients}"> Ingredients </td>
+    <td th:text="${product.category}"> Category </td>
+    <td th:text="${product.vendor.restaurantName}"> Restaurant Name </td>
+    <td th:text="${product.price}"> Price </td>
+    <td th:text="${product.createDate}"> Date Created </td>
+    <td><a th:href="@{/vendor/edit/{id}(id=${product.id})}">Edit</a></td>
+    <td><a th:href="@{/vendor/delete/{id}(id=${product.id})}">Delete</a></td>
+  </tr>
+  </tbody>
+</table>
+
+<br/>
+<th:block th:include="/_footer"> </th:block>
+
+</body>
+</html>

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>FoodToGo</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  </head>
+  <body>
+   <th:block th:include="/_header"> </th:block>
+   <th:block th:include="/_menu"> </th:block>
+   <div class="page-title">Home Page</div>
+   <a href="./"><img th:src="@{/images/logo.jpg}" class="img-responsive center-block" width="300" alt="Logo"/></a>
+   <th:block th:include="/_footer"> </th:block>
+  </body>
+</html>
