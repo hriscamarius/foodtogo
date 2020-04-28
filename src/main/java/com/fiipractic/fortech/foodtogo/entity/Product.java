@@ -26,6 +26,6 @@ public class Product {
     @Temporal(TemporalType.TIMESTAMP)
     private Date createDate;
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
-    @JoinTable(name = "vendors_products", joinColumns = @JoinColumn(name = "product_code"), inverseJoinColumns = @JoinColumn(name = "vendors_user_id"))
+    @JoinTable(name = "vendors_products", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "vendors_user_id"))
     private Vendor vendor;
 }

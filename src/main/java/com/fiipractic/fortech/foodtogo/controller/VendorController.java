@@ -12,12 +12,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.util.List;
 
 @Controller
@@ -69,5 +67,24 @@ public class VendorController {
         List<Product> result = vendor.getProducts();
         model.addAttribute("productList", result);
         return "/vendor/vendorProducts";
+    }
+
+    /*@GetMapping("/deleteProduct/{productId}")
+    public String deleteOwnProduct(@PathVariable @Valid @Min(0) Long productId){
+        String vendorUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        productService.deleteByIdAndVendorUsername(productId, vendorUsername);
+        return "redirect:/vendor/myproducts";
+    }*/
+
+    @GetMapping("/deleteProduct/{productId}")
+    public String deleteProduct(@PathVariable Long productId){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if(productService.existsByIdAndVendorUsername(productId, auth.getName())){
+            productService.deleteByIdAndVendorUsername(productId, auth.getName());
+        }
+        else {
+            return "redirect:/403";
+        }
+        return "redirect:/vendor/myproducts";
     }
 }

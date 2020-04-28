@@ -38,8 +38,8 @@
     <td th:text="${product.vendor.restaurantName}"> Restaurant Name </td>
     <td th:text="${product.price}"> Price </td>
     <td th:text="${product.createDate}"> Date Created </td>
-    <td><a th:href="@{/vendor/edit/{id}(id=${product.id})}">Edit</a></td>
-    <td><a th:href="@{/vendor/delete/{id}(id=${product.id})}">Delete</a></td>
+    <td><a th:href="@{/vendor/editProduct/{id}(id=${product.id})}">Edit</a></td>
+    <td><a th:href="@{/vendor/deleteProduct/{id}(id=${product.id})}">Delete</a></td>
   </tr>
   </tbody>
 </table>

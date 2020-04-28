@@ -1,6 +1,7 @@
 package com.fiipractic.fortech.foodtogo.repository;
 
 import com.fiipractic.fortech.foodtogo.entity.Product;
+import com.fiipractic.fortech.foodtogo.entity.Vendor;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -16,7 +17,10 @@ public interface ProductRepository extends CrudRepository<Product, Long> {
 
     Product findByNameAndVendorId(String name, Long vendorId);
     boolean existsByNameAndVendorUsername(String name, String username);
+    boolean existsByIdAndVendorUsername(Long productId, String username);
     boolean existsByNameAndVendorId(String name, Long vendorId);
 
     void deleteByIdAndVendorId(Long productId, Long vendorId);
+
+    void deleteByIdAndVendorUsername(Long productId, String username);
 }

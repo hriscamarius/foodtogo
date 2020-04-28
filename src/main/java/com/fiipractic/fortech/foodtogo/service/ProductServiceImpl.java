@@ -11,12 +11,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class ProductServiceImpl {
 
     @Autowired
@@ -64,5 +66,17 @@ public class ProductServiceImpl {
                 productRepository.save(product);
             }
         }
+    }
+
+    public void deleteById(Long productId) {
+        productRepository.deleteById(productId);
+    }
+
+    public void deleteByIdAndVendorUsername(Long productId, String username) {
+        productRepository.deleteByIdAndVendorUsername(productId, username);
+    }
+
+    public boolean existsByIdAndVendorUsername(Long productId, String username) {
+        return productRepository.existsByIdAndVendorUsername(productId, username);
     }
 }

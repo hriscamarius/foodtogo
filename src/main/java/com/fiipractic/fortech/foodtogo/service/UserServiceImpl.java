@@ -90,5 +90,10 @@ public class UserServiceImpl implements UserService{
         userRepository.save(customer);
     }
 
+    @Override
+    public void deleteById(Long userId) {
+        userRepository.deleteById(userId);
+    }
+
 
 }
