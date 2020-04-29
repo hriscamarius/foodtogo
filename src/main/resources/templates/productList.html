@@ -10,7 +10,8 @@
 <th:block th:include="/_header"> </th:block>
 <th:block th:include="/_menu"> </th:block>
 
-<div class="page-title">Product List</div>
+<div class="page-title">Product List </div>
+<div class="error-message" th:text="${message}"></div>
 
 <div class="product-preview-container" th:each="product : ${productList}">
   <ul>
@@ -18,7 +19,7 @@
     <li>Name: <span th:utext="${product.name}"></span></li>
     <li>Category: <span th:utext="${product.category}"></span></li>
     <li>Ingredients: <span th:utext="${product.ingredients}"></span></li>
-    <li>Restaurant Name: <span th:utext="${product.restaurantName}"></span></li>
+    <li>Restaurant: <span th:utext="${product.restaurantName}"></span></li>
     <li>Price: <span th:utext="${#numbers.formatDecimal(product.price, 1, 2,'COMMA')}"></span></li>
     <li>
       <a th:href="@{|/buyProduct?id=${product.id}|}">Buy Now</a>

@@ -1,6 +1,7 @@
 package com.fiipractic.fortech.foodtogo.repository;
 
 import com.fiipractic.fortech.foodtogo.entity.User;
+import com.fiipractic.fortech.foodtogo.entity.Vendor;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

@@ -4,18 +4,26 @@ import com.fiipractic.fortech.foodtogo.dto.CustomerDto;
 import com.fiipractic.fortech.foodtogo.dto.ProductDto;
 import com.fiipractic.fortech.foodtogo.dto.ProductRegistrationDto;
 import com.fiipractic.fortech.foodtogo.dto.VendorDto;
+import com.fiipractic.fortech.foodtogo.entity.Product;
 import com.fiipractic.fortech.foodtogo.entity.User;
+import com.fiipractic.fortech.foodtogo.model.CartInfo;
+import com.fiipractic.fortech.foodtogo.model.CustomerForm;
+import com.fiipractic.fortech.foodtogo.model.CustomerInfo;
+import com.fiipractic.fortech.foodtogo.model.ProductInfo;
+import com.fiipractic.fortech.foodtogo.service.OrderServiceImpl;
 import com.fiipractic.fortech.foodtogo.service.ProductServiceImpl;
 import com.fiipractic.fortech.foodtogo.service.UserService;
+import com.fiipractic.fortech.foodtogo.utils.Utils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -24,9 +32,12 @@ public class MainController {
 
     @Autowired
     private ProductServiceImpl productService;
-
     @Autowired
     private UserService userService;
+    @Autowired
+    private OrderServiceImpl orderService;
+
+    private ModelMapper modelMapper = new ModelMapper();
 
     @GetMapping
     public String home(){
@@ -97,4 +108,146 @@ public class MainController {
         userService.saveCustomer(customerDto);
         return "redirect:/registerCustomer?success";
     }
+
+    @RequestMapping("/buyProduct")
+    public String listProductHandler(HttpServletRequest request, RedirectAttributes redirAttrs,
+                                     @RequestParam(value = "id", required = false) Long productId){
+        Product product = null;
+
+        if(productId != null){
+            product = productService.findById(productId).get();
+        }
+        if(product!= null){
+            CartInfo cartInfo = Utils.getCartInSession(request);
+            if(!cartInfo.getCartLines().isEmpty()){
+                String  firstCartLineRestaurantName = cartInfo.getCartLines().get(0).getProductInfo().getRestaurantName();
+                if(!product.getVendor().getRestaurantName().equals(firstCartLineRestaurantName)){
+                    redirAttrs.addFlashAttribute("message",
+                            "You have to choose the same restaurant as the products in the cart: "+firstCartLineRestaurantName);
+                    return "redirect:/productList";
+                }
+            }
+            ProductInfo productInfo = modelMapper.map(product, ProductInfo.class);
+            productInfo.setRestaurantName(product.getVendor().getRestaurantName());
+            cartInfo.addProduct(productInfo, 1);
+        }
+        return "redirect:/shoppingCart";
+    }
+
+    @RequestMapping("/shoppingCartRemoveProduct")
+    public String removeProductHandler(HttpServletRequest request, Model model,
+                                       @RequestParam(value = "id", required = false) Long productId){
+        Product product = null;
+        if(productId != null){
+            product = productService.findById(productId).get();
+        }
+        if(product!= null){
+            CartInfo cartInfo = Utils.getCartInSession(request);
+            ProductInfo productInfo = modelMapper.map(product, ProductInfo.class);
+            cartInfo.removeProduct(productInfo);
+        }
+        return "redirect:/shoppingCart";
+    }
+
+    @PostMapping("/shoppingCart")
+    public String shoppingCartUpdateQty(HttpServletRequest request, Model model,
+                                        @ModelAttribute("cartForm") CartInfo cartForm) {
+
+        CartInfo cartInfo = Utils.getCartInSession(request);
+        cartInfo.updateQuantity(cartForm);
+        return "redirect:/shoppingCart";
+    }
+
+    @GetMapping("/shoppingCart")
+    public String shoppingCartHandler(HttpServletRequest request, Model model) {
+        CartInfo myCart = Utils.getCartInSession(request);
+
+        model.addAttribute("cartForm", myCart);
+        return "shoppingCart";
+    }
+
+    @GetMapping("/shoppingCartCustomer")
+    public String shoppingCartCustomerForm(HttpServletRequest request, Model model) {
+
+        CartInfo cartInfo = Utils.getCartInSession(request);
+        if (cartInfo.isEmpty()) {
+            return "redirect:/shoppingCart";
+        }
+        CustomerInfo customerInfo = cartInfo.getCustomerInfo();
+        CustomerForm customerForm = new CustomerForm(customerInfo);
+        //customerForm = modelMapper.map(customerInfo, CustomerForm.class);
+
+        model.addAttribute("customerForm", customerForm);
+
+        return "shoppingCartCustomer";
+    }
+
+    @PostMapping("/shoppingCartCustomer")
+    public String shoppingCartCustomerSave(HttpServletRequest request, Model model,
+                                           @ModelAttribute("customerForm") @Validated CustomerForm customerForm,
+                                           BindingResult result,
+                                           final RedirectAttributes redirectAttributes) {
+
+        if (result.hasErrors()) {
+            customerForm.setValid(false);
+            // Forward to reenter customer info.
+            return "shoppingCartCustomer";
+        }
+
+        customerForm.setValid(true);
+        CartInfo cartInfo = Utils.getCartInSession(request);
+        CustomerInfo customerInfo = modelMapper.map(customerForm, CustomerInfo.class);
+        cartInfo.setCustomerInfo(customerInfo);
+
+        return "redirect:/shoppingCartConfirmation";
+    }
+
+    @GetMapping("/shoppingCartConfirmation")
+    public String shoppingCartConfirmationReview(HttpServletRequest request, Model model) {
+        CartInfo cartInfo = Utils.getCartInSession(request);
+        if (cartInfo.isEmpty()) {
+            return "redirect:/shoppingCart";
+        } else if (!cartInfo.isValidCustomer()) {
+            return "redirect:/shoppingCartCustomer";
+        }
+        model.addAttribute("myCart", cartInfo);
+        return "shoppingCartConfirmation";
+    }
+
+    @PostMapping("/shoppingCartConfirmation")
+    public String shoppingCartConfirmationSave(HttpServletRequest request, Model model) {
+        CartInfo cartInfo = Utils.getCartInSession(request);
+        if (cartInfo.isEmpty()) {
+            return "redirect:/shoppingCart";
+        } else if (!cartInfo.isValidCustomer()) {
+            return "redirect:/shoppingCartCustomer";
+        }
+        try {
+            orderService.saveOrder(cartInfo);
+        } catch (Exception e) {
+
+            return "shoppingCartConfirmation";
+        }
+
+        // Remove Cart from Session.
+        Utils.removeCartInSession(request);
+
+        // Store last cart.
+        Utils.storeLastOrderedCartInSession(request, cartInfo);
+
+        return "redirect:/shoppingCartFinalize";
+    }
+
+    @GetMapping("/shoppingCartFinalize")
+    public String shoppingCartFinalize(HttpServletRequest request, Model model) {
+
+        CartInfo lastOrderedCart = Utils.getLastOrderedCartInSession(request);
+
+        if (lastOrderedCart == null) {
+            return "redirect:/shoppingCart";
+        }
+        model.addAttribute("lastOrderedCart", lastOrderedCart);
+        return "shoppingCartFinalize";
+    }
+
 }

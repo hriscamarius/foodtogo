@@ -15,7 +15,7 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -78,5 +78,9 @@ public class ProductServiceImpl {
 
     public boolean existsByIdAndVendorUsername(Long productId, String username) {
         return productRepository.existsByIdAndVendorUsername(productId, username);
+    }
+
+    public Optional<Product> findById(Long productId) {
+        return productRepository.findById(productId);
     }
 }

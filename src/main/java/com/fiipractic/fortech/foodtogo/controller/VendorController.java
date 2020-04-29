@@ -1,10 +1,16 @@
 package com.fiipractic.fortech.foodtogo.controller;
 
 import com.fiipractic.fortech.foodtogo.dto.ProductRegistrationDto;
+import com.fiipractic.fortech.foodtogo.entity.Order;
 import com.fiipractic.fortech.foodtogo.entity.Product;
 import com.fiipractic.fortech.foodtogo.entity.Vendor;
+import com.fiipractic.fortech.foodtogo.model.OrderDetailInfo;
+import com.fiipractic.fortech.foodtogo.model.OrderInfo;
+import com.fiipractic.fortech.foodtogo.service.OrderServiceImpl;
 import com.fiipractic.fortech.foodtogo.service.ProductServiceImpl;
 import com.fiipractic.fortech.foodtogo.service.UserServiceImpl;
+import org.aspectj.weaver.ast.Or;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -17,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/vendor")
@@ -26,6 +33,9 @@ public class VendorController {
     private UserServiceImpl userService;
     @Autowired
     private ProductServiceImpl productService;
+    @Autowired
+    private OrderServiceImpl orderService;
+    private ModelMapper modelMapper = new ModelMapper();
 
     @GetMapping("/profile")
     public String vendorProfile(Model model){
@@ -69,13 +79,6 @@ public class VendorController {
         return "/vendor/vendorProducts";
     }
 
-    /*@GetMapping("/deleteProduct/{productId}")
-    public String deleteOwnProduct(@PathVariable @Valid @Min(0) Long productId){
-        String vendorUsername = SecurityContextHolder.getContext().getAuthentication().getName();
-        productService.deleteByIdAndVendorUsername(productId, vendorUsername);
-        return "redirect:/vendor/myproducts";
-    }*/
-
     @GetMapping("/deleteProduct/{productId}")
     public String deleteProduct(@PathVariable Long productId){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -87,4 +90,35 @@ public class VendorController {
         }
         return "redirect:/vendor/myproducts";
     }
+
+    @GetMapping("/orderList")
+    public String vendorOrders(Model model) {
+        /*Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Vendor vendor = (Vendor) userService.findByUsername(auth.getName());
+        List<Order> orders = vendor.getVendorOrders();*/
+        List<OrderInfo> orderInfoList = orderService.findAllOrderInfo();
+      /*  List<OrderInfo> orderInfoList = orders.stream()
+                .map(order -> modelMapper.map(order, OrderInfo.class))
+                .collect(Collectors.toList());*/
+        model.addAttribute("orderInfoList", orderInfoList);
+        return "orderList";
+    }
+
+    @GetMapping("/order")
+    public String orderView(Model model, @RequestParam("orderId") Long orderId) {
+        OrderInfo orderInfo = null;
+        if (orderId != null) {
+            orderInfo = orderService.findOrderInfoById(orderId);
+        }
+        if (orderInfo == null) {
+            return "redirect:/vendor/orderList";
+        }
+        List<OrderDetailInfo> details = orderService.listOrderDetailInfos(orderId);
+        orderInfo.setDetails(details);
+
+        model.addAttribute("orderInfo", orderInfo);
+
+        return "order";
+    }
+
 }

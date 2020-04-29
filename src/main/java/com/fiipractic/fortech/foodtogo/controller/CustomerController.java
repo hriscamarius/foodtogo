@@ -1,6 +1,9 @@
 package com.fiipractic.fortech.foodtogo.controller;
 
 import com.fiipractic.fortech.foodtogo.entity.Customer;
+import com.fiipractic.fortech.foodtogo.model.OrderDetailInfo;
+import com.fiipractic.fortech.foodtogo.model.OrderInfo;
+import com.fiipractic.fortech.foodtogo.service.OrderServiceImpl;
 import com.fiipractic.fortech.foodtogo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -10,8 +13,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Controller
 @RequestMapping("/customer")
@@ -20,6 +25,8 @@ public class CustomerController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private OrderServiceImpl orderService;
 
     @GetMapping("/profile")
     public String customerProfile(Model model){
@@ -29,5 +36,22 @@ public class CustomerController {
             model.addAttribute("customer", customer);
         }
         return "customer/profile";
+    }
+
+    @GetMapping("/order")
+    public String orderView(Model model, @RequestParam("orderId") Long orderId) {
+        OrderInfo orderInfo = null;
+        if (orderId != null) {
+            orderInfo = orderService.getOrderInfo(orderId);
+        }
+        if (orderInfo == null) {
+            return "redirect:/admin/orderList";
+        }
+        List<OrderDetailInfo> details = orderService.listOrderDetailInfos(orderId);
+        orderInfo.setDetails(details);
+
+        model.addAttribute("orderInfo", orderInfo);
+
+        return "customer/order";
     }
 }

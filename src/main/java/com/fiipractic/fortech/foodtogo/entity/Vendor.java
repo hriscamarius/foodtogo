@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
@@ -16,6 +17,8 @@ import java.util.List;
 @Table(name = "vendors")
 public class Vendor extends User{
 
+    @Column(unique = true)
+    @Size(min=3, max=100)
     private String restaurantName;
     private String specificRestaurant;
     private String phoneNo;

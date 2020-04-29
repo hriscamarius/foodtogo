@@ -12,6 +12,10 @@
     |
   </th:block>
   <th:block sec:authorize="hasRole('ROLE_VENDOR')">
+    <a th:href="@{/vendor/orderList}">Order List</a>
+    |
+  </th:block>
+  <th:block sec:authorize="hasRole('ROLE_VENDOR')">
     <a th:href="@{/vendor/registerProduct}">Create Product</a>
     |
   </th:block>

@@ -18,20 +18,20 @@ public class OrderDetail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotNull
-    private int quatity;
+    private int quantity;
     @NotNull
     private double price;
     @NotNull
     private double amount;
 
-   /* @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order", nullable = false, //
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id", nullable = false, //
             foreignKey = @ForeignKey(name = "ORDER_DETAIL_ORD_FK"))
     private Order order;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PRODUCT_ID", nullable = false, //
+    @JoinColumn(name = "product_id", nullable = false, //
             foreignKey = @ForeignKey(name = "ORDER_DETAIL_PROD_FK"))
-    private Product product;*/
+    private Product product;
 
 }
