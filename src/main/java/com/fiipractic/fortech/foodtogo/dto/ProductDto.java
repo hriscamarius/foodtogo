@@ -11,5 +11,4 @@ public class ProductDto {
     private double price;
     private String ingredients;
     private String restaurantName;
-
 }

@@ -45,13 +45,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     }
 
-   /* @Override
-    public void configure(WebSecurity web){
-        web
-                .ignoring()
-                .antMatchers("/resource/**","/static/**", "/css/**", "/js/**", "/images/**");
-    }
-*/
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

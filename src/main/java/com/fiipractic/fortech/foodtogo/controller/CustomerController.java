@@ -38,20 +38,25 @@ public class CustomerController {
         return "customer/profile";
     }
 
-    @GetMapping("/order")
+    @GetMapping("/orderList")
+    public String customerOrders(Model model) {
+        List<OrderInfo> orderInfoList = orderService.findAllOrderInfo();
+        model.addAttribute("orderInfoList", orderInfoList);
+        return "orderList";
+    }
+
+    @GetMapping("/orderInfo")
     public String orderView(Model model, @RequestParam("orderId") Long orderId) {
         OrderInfo orderInfo = null;
         if (orderId != null) {
-            orderInfo = orderService.getOrderInfo(orderId);
+            orderInfo = orderService.findOrderInfoById(orderId);
         }
         if (orderInfo == null) {
-            return "redirect:/admin/orderList";
+            return "redirect:/customer/orderList";
         }
         List<OrderDetailInfo> details = orderService.listOrderDetailInfos(orderId);
         orderInfo.setDetails(details);
-
         model.addAttribute("orderInfo", orderInfo);
-
-        return "customer/order";
+        return "order";
     }
 }

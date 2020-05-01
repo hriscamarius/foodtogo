@@ -1,16 +1,11 @@
 package com.fiipractic.fortech.foodtogo.service;
 
-import com.fiipractic.fortech.foodtogo.entity.Order;
-import com.fiipractic.fortech.foodtogo.entity.OrderDetail;
-import com.fiipractic.fortech.foodtogo.entity.Product;
-import com.fiipractic.fortech.foodtogo.entity.Vendor;
+import com.fiipractic.fortech.foodtogo.entity.*;
 import com.fiipractic.fortech.foodtogo.model.*;
 import com.fiipractic.fortech.foodtogo.repository.OrderDetailRepository;
 import com.fiipractic.fortech.foodtogo.repository.OrderRepository;
 import com.fiipractic.fortech.foodtogo.repository.ProductRepository;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
-import org.modelmapper.spi.MatchingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,7 +15,6 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -38,7 +32,6 @@ public class OrderServiceImpl {
 
     @Transactional(rollbackOn = Exception.class)
     public void saveOrder(CartInfo cartInfo){
-
         int orderNum = this.getMaxOrderNum() + 1;
         Order order = new Order();
         order.setOrderNum(orderNum);
@@ -54,6 +47,14 @@ public class OrderServiceImpl {
         if(firstProductFromCart!=null){
             order.setVendor(firstProductFromCart.getVendor());
         }
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if(auth.isAuthenticated()) {
+            User user = userService.findByUsername(auth.getName());
+            if (user instanceof Customer) {
+                Customer customer = (Customer) user;
+                order.setCustomer(customer);
+            }
+        }
         orderRepository.save(order);
 
         List<CartLineInfo> lines = cartInfo.getCartLines();
@@ -68,9 +69,7 @@ public class OrderServiceImpl {
             orderDetailRepository.save(detail);
         }
         cartInfo.setOrderNum(orderNum);
-
     }
-
 
     private int getMaxOrderNum() {
         Integer maxOrderNum = orderRepository.maxOrderNum();
@@ -99,21 +98,23 @@ public class OrderServiceImpl {
             orderDetailInfo.setAmount(orderDetail.getAmount());
             orderDetailInfos.add(orderDetailInfo);
         }
-
-        /*return orderDetails.stream()
-                .map(detail -> modelMapper.map(detail, OrderDetailInfo.class))
-                .collect(Collectors.toList());*/
-
         return orderDetailInfos;
     }
 
     public List<OrderInfo> findAllOrderInfo(){
-
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Vendor vendor = (Vendor) userService.findByUsername(auth.getName());
-        List<Order> orders = vendor.getVendorOrders();
+        User user = userService.findByUsername(auth.getName());
+        List<Order> orders = null;
+        if(user instanceof Vendor){
+            Vendor vendor = (Vendor) user;
+            orders =  vendor.getVendorOrders();
+        }
+        if(user instanceof Customer){
+            Customer customer = (Customer) user;
+            orders = customer.getCustomerOrders();
 
-        /*List<OrderInfo> orderInfos = new ArrayList<>();
+        }
+        List<OrderInfo> orderInfos = new ArrayList<>();
         for (Order order: orders) {
             OrderInfo orderInfo  =  new OrderInfo();
             orderInfo.setId(order.getId());
@@ -125,16 +126,31 @@ public class OrderServiceImpl {
             orderInfo.setCustomerAddress(order.getCustomerAddress());
             orderInfo.setCustomerEmail(order.getCustomerEmail());
             orderInfo.setCustomerPhone(order.getCustomerPhone());
+            orderInfo.setRestaurantName(order.getVendor().getRestaurantName());
             orderInfos.add(orderInfo);
-        }*/
-        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        //modelMapper.getConfiguration().setAmbiguityIgnored(true);
-        return orders.stream()
-                .map(order -> modelMapper.map(order, OrderInfo.class))
-                .collect(Collectors.toList());
-       //return orderInfos;
+        }
+       return orderInfos;
     }
 
+    public List<OrderInfo> findAll(){
+        List<Order> orders = (List<Order>) orderRepository.findAll();
+        List<OrderInfo> orderInfos = new ArrayList<>();
+        for (Order order: orders) {
+            OrderInfo orderInfo  =  new OrderInfo();
+            orderInfo.setId(order.getId());
+            orderInfo.setOrderDate(order.getOrderDate());
+            orderInfo.setOrderNum(order.getOrderNum());
+            orderInfo.setStatus(order.getStatus());
+            orderInfo.setAmount(order.getAmount());
+            orderInfo.setCustomerName(order.getCustomerName());
+            orderInfo.setCustomerAddress(order.getCustomerAddress());
+            orderInfo.setCustomerEmail(order.getCustomerEmail());
+            orderInfo.setCustomerPhone(order.getCustomerPhone());
+            orderInfo.setRestaurantName(order.getVendor().getRestaurantName());
+            orderInfos.add(orderInfo);
+        }
+        return orderInfos;
+    }
 
     public OrderInfo findOrderInfoById(Long orderId) {
         Order order = orderRepository.findById(orderId).get();
@@ -148,7 +164,15 @@ public class OrderServiceImpl {
         orderInfo.setCustomerAddress(order.getCustomerAddress());
         orderInfo.setCustomerEmail(order.getCustomerEmail());
         orderInfo.setCustomerPhone(order.getCustomerPhone());
-
+        orderInfo.setRestaurantName(order.getVendor().getRestaurantName());
         return orderInfo;
+    }
+
+    public Order findOrderById(Long orderId) {
+        return orderRepository.findById(orderId).get();
+    }
+
+    public void save(Order order) {
+        orderRepository.save(order);
     }
 }

@@ -11,16 +11,10 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends CrudRepository<Product, Long> {
 
-   List<Product> findAllProductsByVendorId(Long vendorId);
-
     Product findByIdAndVendorId(Long productId, Long vendorId);
-
     Product findByNameAndVendorId(String name, Long vendorId);
     boolean existsByNameAndVendorUsername(String name, String username);
     boolean existsByIdAndVendorUsername(Long productId, String username);
     boolean existsByNameAndVendorId(String name, Long vendorId);
-
-    void deleteByIdAndVendorId(Long productId, Long vendorId);
-
     void deleteByIdAndVendorUsername(Long productId, String username);
 }

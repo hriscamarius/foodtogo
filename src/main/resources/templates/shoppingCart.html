@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
   <meta charset="UTF-8">
   <title>Shopping Cart</title>
@@ -16,25 +17,31 @@
   <form method="POST" th:object="${cartForm}" th:action="@{/shoppingCart}">
     <div class="product-preview-container" th:each="cartLineInfo, varStatus : ${cartForm.cartLines}">
       <ul>
-        <li>ID: <span th:utext="${cartLineInfo.productInfo.id}"></span> <input type="hidden"
-                                                                                   th:name="|cartLines[${varStatus.index}].productInfo.id|"
-                                                                                   th:value="${cartLineInfo.productInfo.id}"/>
+        <li>ID: <span th:utext="${cartLineInfo.productInfo.id}"></span>
+          <input type="hidden" th:name="|cartLines[${varStatus.index}].productInfo.id|" th:value="${cartLineInfo.productInfo.id}" />
         </li>
         <li>Name: <span th:utext="${cartLineInfo.productInfo.name}"></span></li>
-        <li>Restaurnat Name: <span th:utext="${cartLineInfo.productInfo.restaurantName}"></span></li>
-        <li>Price: <span class="price"
-                         th:utext="${#numbers.formatDecimal(cartLineInfo.productInfo.price,1,2,'COMMA')}"> </span></li>
-        <li>Quantity: <input th:name="|cartLines[${varStatus.index}].quantity|" th:value="${cartLineInfo.quantity}"/>
-        </li>
-        <li>Subtotal: <span class="subtotal"
-                            th:utext="${#numbers.formatDecimal(cartLineInfo.amount,1,2,'COMMA')}"> </span></li>
+        <li>Restaurant: <span th:utext="${cartLineInfo.productInfo.restaurantName}"></span></li>
+        <li>Price: <span class="price" th:utext="${#numbers.formatDecimal(cartLineInfo.productInfo.price,1,2,'COMMA')}"> </span></li>
+        <li>Quantity: <input th:name="|cartLines[${varStatus.index}].quantity|" th:value="${cartLineInfo.quantity}"/></li>
+        <li>Subtotal: <span class="subtotal" th:utext="${#numbers.formatDecimal(cartLineInfo.amount,1,2,'COMMA')}"> </span></li>
         <li><a th:href="@{|/shoppingCartRemoveProduct?id=${cartLineInfo.productInfo.id}|}"> Delete </a></li>
       </ul>
     </div>
     <div style="clear: both"></div>
-    <input class="button-update-sc" type="submit" value="Update Quantity"/> <a class="navi-item"
-                                                                               th:href="@{/shoppingCartCustomer}">Enter
-    Customer Info</a> <a class="navi-item" th:href="@{/productList}">Continue Buy</a></form>
+    <input class="button-update-sc" type="submit" value="Update Quantity"/>
+    <th:block sec:authorize="!isAuthenticated()">
+      <a class="navi-item" th:href="@{/shoppingCartCustomer}">Enter Customer Info</a>
+    </th:block>
+    <th:block sec:authorize="isAuthenticated()">
+      <th:block sec:authorize ="!hasRole('ROLE_VENDOR')">
+        <a class="navi-item" th:href="@{/shoppingCartCustomer}">Go to Customer Info</a>
+      </th:block>
+      <th:block sec:authorize ="hasRole('ROLE_VENDOR')">
+        <a class="navi-item" th:href="@{/shoppingCartCustomer}">Enter Customer Info</a>
+      </th:block>
+    </th:block>
+    <a class="navi-item" th:href="@{/productList}">Continue Buy</a></form>
 </th:block>
 <th:block th:include="/_footer"> </th:block>
 </body>

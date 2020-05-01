@@ -93,18 +93,12 @@ public class VendorController {
 
     @GetMapping("/orderList")
     public String vendorOrders(Model model) {
-        /*Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Vendor vendor = (Vendor) userService.findByUsername(auth.getName());
-        List<Order> orders = vendor.getVendorOrders();*/
         List<OrderInfo> orderInfoList = orderService.findAllOrderInfo();
-      /*  List<OrderInfo> orderInfoList = orders.stream()
-                .map(order -> modelMapper.map(order, OrderInfo.class))
-                .collect(Collectors.toList());*/
         model.addAttribute("orderInfoList", orderInfoList);
         return "orderList";
     }
 
-    @GetMapping("/order")
+    @GetMapping("/orderInfo")
     public String orderView(Model model, @RequestParam("orderId") Long orderId) {
         OrderInfo orderInfo = null;
         if (orderId != null) {
@@ -115,10 +109,24 @@ public class VendorController {
         }
         List<OrderDetailInfo> details = orderService.listOrderDetailInfos(orderId);
         orderInfo.setDetails(details);
-
         model.addAttribute("orderInfo", orderInfo);
-
         return "order";
     }
 
+    @GetMapping("/order")
+    public String changeOrderStatus( @RequestParam("orderId") Long orderId, @RequestParam String status) {
+        Order order = null;
+        if (orderId != null) {
+            order = orderService.findOrderById(orderId);
+        }
+        if (order == null) {
+            return "redirect:/vendor/orderList";
+        }
+        if(status.equals(Order.PENDING) || status.equals(Order.IN_PROGRESS) || status.equals(Order.DELIVERED)){
+            order.setStatus(status);
+        }
+        order.setStatus(status);
+        orderService.save(order);
+        return "redirect:/vendor/orderInfo?orderId="+orderId;
+    }
 }

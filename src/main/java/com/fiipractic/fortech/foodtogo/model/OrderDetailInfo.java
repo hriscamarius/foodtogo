@@ -12,10 +12,7 @@ public class OrderDetailInfo {
     private Long id;
     private Long productId;
     private String productName;
-
     private int quanity;
     private double price;
     private double amount;
-
-
 }

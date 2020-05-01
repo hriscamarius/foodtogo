@@ -8,7 +8,7 @@
   <a th:href="@{/shoppingCart}">My Cart</a>
   |
   <th:block sec:authorize="hasRole('ROLE_CUSTOMER')">
-    <a th:href="@{/customer/orderList}">Order List</a>
+    <a th:href="@{/customer/orderList}">My Orders</a>
     |
   </th:block>
   <th:block sec:authorize="hasRole('ROLE_VENDOR')">
@@ -29,6 +29,10 @@
   </th:block>
   <th:block sec:authorize="hasRole('ROLE_ADMIN')">
     <a th:href="@{/admin/products}">All Products</a>
+    |
+  </th:block>
+  <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+    <a th:href="@{/admin/orders}">All Orders</a>
     |
   </th:block>
 </div>

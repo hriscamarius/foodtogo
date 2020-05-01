@@ -21,6 +21,6 @@ public class OrderInfo {
     private String customerAddress;
     private String customerEmail;
     private String customerPhone;
+    private String restaurantName;
     private List<OrderDetailInfo> details;
-
 }

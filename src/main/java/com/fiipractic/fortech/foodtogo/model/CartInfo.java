@@ -86,7 +86,10 @@ public class CartInfo {
         if(cartInfo!=null){
             List<CartLineInfo> lines = cartInfo.getCartLines();
             for(CartLineInfo line : lines){
-                this.updateProduct(line.getProductInfo().getId(), line.getQuantity());
+                ProductInfo productInfo = line.getProductInfo();
+                int quantity = line.getQuantity();
+                long productId = productInfo.getId();
+                this.updateProduct(productId, quantity);
             }
         }
     }

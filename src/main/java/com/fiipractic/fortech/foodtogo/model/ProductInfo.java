@@ -13,6 +13,4 @@ public class ProductInfo {
     private String name;
     private double price;
     private String restaurantName;
-
-
 }

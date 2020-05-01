@@ -39,7 +39,6 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
         User user = userRepository.findByUsername(username);
         if(user!=null){
             boolean enabled = true;
@@ -94,5 +93,4 @@ public class UserServiceImpl implements UserService{
     public void deleteById(Long userId) {
         userRepository.deleteById(userId);
     }
-
 }

@@ -11,7 +11,5 @@ public class CustomerInfo {
     private String address;
     private String email;
     private String phoneNo;
-
     private boolean valid;
-
 }

@@ -11,7 +11,6 @@ public class CustomerForm {
     private String address;
     private String email;
     private String phoneNo;
-
     private boolean valid;
 
     public CustomerForm(CustomerInfo customerInfo) {

@@ -45,5 +45,4 @@ public class VendorDto {
 
     @AssertTrue
     private Boolean terms;
-
 }

@@ -33,5 +33,4 @@ public class OrderDetail {
     @JoinColumn(name = "product_id", nullable = false, //
             foreignKey = @ForeignKey(name = "ORDER_DETAIL_PROD_FK"))
     private Product product;
-
 }

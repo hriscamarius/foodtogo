@@ -2,8 +2,8 @@ package com.fiipractic.fortech.foodtogo.controller;
 
 import com.fiipractic.fortech.foodtogo.dto.CustomerDto;
 import com.fiipractic.fortech.foodtogo.dto.ProductDto;
-import com.fiipractic.fortech.foodtogo.dto.ProductRegistrationDto;
 import com.fiipractic.fortech.foodtogo.dto.VendorDto;
+import com.fiipractic.fortech.foodtogo.entity.Customer;
 import com.fiipractic.fortech.foodtogo.entity.Product;
 import com.fiipractic.fortech.foodtogo.entity.User;
 import com.fiipractic.fortech.foodtogo.model.CartInfo;
@@ -16,6 +16,8 @@ import com.fiipractic.fortech.foodtogo.service.UserService;
 import com.fiipractic.fortech.foodtogo.utils.Utils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -113,7 +115,6 @@ public class MainController {
     public String listProductHandler(HttpServletRequest request, RedirectAttributes redirAttrs,
                                      @RequestParam(value = "id", required = false) Long productId){
         Product product = null;
-
         if(productId != null){
             product = productService.findById(productId).get();
         }
@@ -173,12 +174,22 @@ public class MainController {
         if (cartInfo.isEmpty()) {
             return "redirect:/shoppingCart";
         }
-        CustomerInfo customerInfo = cartInfo.getCustomerInfo();
-        CustomerForm customerForm = new CustomerForm(customerInfo);
-        //customerForm = modelMapper.map(customerInfo, CustomerForm.class);
-
+        CustomerForm customerForm = new CustomerForm();;
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if(auth.isAuthenticated()){
+            User user = userService.findByUsername(auth.getName());
+            if(user instanceof Customer){
+                Customer customer = (Customer) user;
+                customerForm.setName(customer.getName());
+                customerForm.setEmail(customer.getEmail());
+                customerForm.setPhoneNo(customer.getPhoneNo());
+                customerForm.setAddress(customer.getAddress());
+            }
+        }else{
+            CustomerInfo customerInfo = cartInfo.getCustomerInfo();
+            customerForm = new CustomerForm(customerInfo);
+        }
         model.addAttribute("customerForm", customerForm);
-
         return "shoppingCartCustomer";
     }
 
@@ -190,7 +201,6 @@ public class MainController {
 
         if (result.hasErrors()) {
             customerForm.setValid(false);
-            // Forward to reenter customer info.
             return "shoppingCartCustomer";
         }
 
@@ -228,13 +238,10 @@ public class MainController {
 
             return "shoppingCartConfirmation";
         }
-
         // Remove Cart from Session.
         Utils.removeCartInSession(request);
-
         // Store last cart.
         Utils.storeLastOrderedCartInSession(request, cartInfo);
-
         return "redirect:/shoppingCartFinalize";
     }
 
@@ -249,5 +256,4 @@ public class MainController {
         model.addAttribute("lastOrderedCart", lastOrderedCart);
         return "shoppingCartFinalize";
     }
-
 }

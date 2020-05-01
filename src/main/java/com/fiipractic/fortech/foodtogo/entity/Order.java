@@ -44,15 +44,10 @@ public class Order implements Serializable {
     @NotNull
     private String customerPhone;
 
-    /*@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-    @JoinTable(name = "orders_products", joinColumns = @JoinColumn(name = "product_code"), inverseJoinColumns = @JoinColumn(name = "order_id"))
-    private List<Product> products;*/
     @ManyToOne(fetch =FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinTable(name = "vendors_orders", joinColumns = @JoinColumn(name = "order_id"), inverseJoinColumns = @JoinColumn(name = "vendors_user_id"))
     private Vendor vendor;
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinTable(name = "customers_orders", joinColumns = @JoinColumn(name = "order_id"), inverseJoinColumns = @JoinColumn(name = "customers_user_id"))
     private Customer customer;
-
-
 }
