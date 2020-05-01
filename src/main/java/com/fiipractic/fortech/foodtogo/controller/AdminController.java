@@ -1,5 +1,6 @@
 package com.fiipractic.fortech.foodtogo.controller;
 
+import com.fiipractic.fortech.foodtogo.dto.ProductRegistrationDto;
 import com.fiipractic.fortech.foodtogo.entity.Product;
 import com.fiipractic.fortech.foodtogo.entity.User;
 import com.fiipractic.fortech.foodtogo.model.OrderDetailInfo;
@@ -13,11 +14,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -62,11 +62,33 @@ public class AdminController {
         return "redirect:/admin/products";
     }
 
-   /* @GetMapping("/editProduct/{userId}")
-    public String editProduct(@PathVariable @Valid @Min(0) Long productId){
-        productService.editById(productId);
+    @GetMapping("/editProduct/{productId}")
+    public String showEditProductForm(@PathVariable Long productId, Model model) {
+
+        ProductRegistrationDto productRegistrationDto = new ProductRegistrationDto();
+        Product product = productService.findById(productId);
+        if(product != null){
+            productRegistrationDto.setName(product.getName());
+            productRegistrationDto.setCategory(product.getCategory());
+            productRegistrationDto.setPrice(product.getPrice());
+            productRegistrationDto.setIngredients(product.getIngredients());
+        }else{
+            return "/products";
+        }
+        model.addAttribute("productRegistrationDto", productRegistrationDto);
+        model.addAttribute("productId", productId);
+        return "/admin/editProduct";
+    }
+
+    @PostMapping("/editProduct/{productId}")
+    public String updateProduct(@PathVariable Long productId,  @ModelAttribute("productRegistrationDto") @Valid ProductRegistrationDto prd,
+                                BindingResult result){
+        if(result.hasErrors()){
+            return "/admin/editProduct";
+        }
+        productService.updateProduct(productId, prd);
         return "redirect:/admin/products";
-    }*/
+    }
 
     @GetMapping("/deleteUser/{userId}")
     public String deleteUser(@PathVariable Long userId){

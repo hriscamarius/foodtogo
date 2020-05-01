@@ -2,6 +2,7 @@ package com.fiipractic.fortech.foodtogo.dto;
 
 
 import lombok.Data;
+import org.springframework.format.annotation.NumberFormat;
 
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -17,6 +18,7 @@ public class ProductRegistrationDto {
     @NotEmpty(message = "Please provide a Category")
     private String category;
     @NotNull(message = "Price cannot be null")
+    @NumberFormat
     private double price;
     @NotEmpty(message = "Please provide some ingredients")
     private String ingredients;

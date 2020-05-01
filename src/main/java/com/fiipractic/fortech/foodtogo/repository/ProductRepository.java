@@ -1,12 +1,13 @@
 package com.fiipractic.fortech.foodtogo.repository;
 
 import com.fiipractic.fortech.foodtogo.entity.Product;
-import com.fiipractic.fortech.foodtogo.entity.Vendor;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
-import java.util.List;
 
 @Repository
 public interface ProductRepository extends CrudRepository<Product, Long> {
@@ -17,4 +18,9 @@ public interface ProductRepository extends CrudRepository<Product, Long> {
     boolean existsByIdAndVendorUsername(Long productId, String username);
     boolean existsByNameAndVendorId(String name, Long vendorId);
     void deleteByIdAndVendorUsername(Long productId, String username);
+
+    @Modifying
+    @Transactional
+    @Query("update Product p set p.name=:name, p.category=:category, p.price=:price, p.ingredients=:ingredients where p.id=:id")
+    void updateProduct(@Param("id") Long productId, @Param("name") String name, @Param("category") String category, @Param("price") double price, @Param("ingredients") String ingredients);
 }

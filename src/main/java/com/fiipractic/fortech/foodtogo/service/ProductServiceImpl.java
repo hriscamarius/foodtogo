@@ -80,7 +80,16 @@ public class ProductServiceImpl {
         return productRepository.existsByIdAndVendorUsername(productId, username);
     }
 
-    public Optional<Product> findById(Long productId) {
-        return productRepository.findById(productId);
+    public Product findById(Long productId) {
+        Optional<Product> productOptional = productRepository.findById(productId);
+        Product product = null;
+        if(productOptional.isPresent()){
+            product = productOptional.get();
+        }
+        return product;
+    }
+
+    public void updateProduct(Long productId, ProductRegistrationDto prd) {
+        productRepository.updateProduct(productId, prd.getName(), prd.getCategory(), prd.getPrice(), prd.getIngredients());
     }
 }

@@ -9,7 +9,6 @@ import com.fiipractic.fortech.foodtogo.model.OrderInfo;
 import com.fiipractic.fortech.foodtogo.service.OrderServiceImpl;
 import com.fiipractic.fortech.foodtogo.service.ProductServiceImpl;
 import com.fiipractic.fortech.foodtogo.service.UserServiceImpl;
-import org.aspectj.weaver.ast.Or;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -21,9 +20,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/vendor")
@@ -79,11 +76,39 @@ public class VendorController {
         return "/vendor/vendorProducts";
     }
 
+    @GetMapping("/editProduct/{productId}")
+    public String showEditProductForm(@PathVariable Long productId, Model model) {
+
+        ProductRegistrationDto productRegistrationDto = new ProductRegistrationDto();
+        Product product = productService.findById(productId);
+        if(product != null){
+            productRegistrationDto.setName(product.getName());
+            productRegistrationDto.setCategory(product.getCategory());
+            productRegistrationDto.setPrice(product.getPrice());
+            productRegistrationDto.setIngredients(product.getIngredients());
+        }else{
+            return "/myproducts";
+        }
+        model.addAttribute("productRegistrationDto", productRegistrationDto);
+        model.addAttribute("productId", productId);
+        return "/vendor/editProduct";
+    }
+
+    @PostMapping("/editProduct/{productId}")
+    public String updateProduct(@PathVariable Long productId,  @ModelAttribute("productRegistrationDto") @Valid ProductRegistrationDto prd,
+                                BindingResult result){
+        if(result.hasErrors()){
+            return "/vendor/editProduct";
+        }
+        productService.updateProduct(productId, prd);
+        return "redirect:/vendor/myproducts";
+    }
+
     @GetMapping("/deleteProduct/{productId}")
     public String deleteProduct(@PathVariable Long productId){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if(productService.existsByIdAndVendorUsername(productId, auth.getName())){
-            productService.deleteByIdAndVendorUsername(productId, auth.getName());
+           productService.deleteByIdAndVendorUsername(productId, auth.getName());
         }
         else {
             return "redirect:/403";

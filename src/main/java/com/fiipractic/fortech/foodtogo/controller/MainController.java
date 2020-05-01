@@ -116,7 +116,7 @@ public class MainController {
                                      @RequestParam(value = "id", required = false) Long productId){
         Product product = null;
         if(productId != null){
-            product = productService.findById(productId).get();
+            product = productService.findById(productId);
         }
         if(product!= null){
             CartInfo cartInfo = Utils.getCartInSession(request);
@@ -140,7 +140,7 @@ public class MainController {
                                        @RequestParam(value = "id", required = false) Long productId){
         Product product = null;
         if(productId != null){
-            product = productService.findById(productId).get();
+            product = productService.findById(productId);
         }
         if(product!= null){
             CartInfo cartInfo = Utils.getCartInSession(request);
