@@ -3,7 +3,7 @@ FoodToGO Application / Spring Boot + Data JPA + Hibernate + Security + Web + MyS
 
 Utilizatori/parola: admin/admin, vendor1/123, vendor2/123, customer1/123, customer1/123
 
-MySQL: CREATE SCHEMA `foodtogo`;
+MySQL: CREATE SCHEMA \`foodtogo\`;
 	connection user/pass: root/admin
 
 Construiți o aplicație pentru plasare de comenzi de produse din restaurante.
