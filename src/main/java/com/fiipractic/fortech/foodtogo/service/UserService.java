@@ -1,7 +1,7 @@
 package com.fiipractic.fortech.foodtogo.service;
 
-import com.fiipractic.fortech.foodtogo.dto.CustomerDto;
-import com.fiipractic.fortech.foodtogo.dto.VendorDto;
+import com.fiipractic.fortech.foodtogo.model.CustomerDto;
+import com.fiipractic.fortech.foodtogo.model.VendorDto;
 import com.fiipractic.fortech.foodtogo.entity.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;

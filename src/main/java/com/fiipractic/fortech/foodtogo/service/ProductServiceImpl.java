@@ -1,7 +1,7 @@
 package com.fiipractic.fortech.foodtogo.service;
 
-import com.fiipractic.fortech.foodtogo.dto.ProductDto;
-import com.fiipractic.fortech.foodtogo.dto.ProductRegistrationDto;
+import com.fiipractic.fortech.foodtogo.model.ProductDto;
+import com.fiipractic.fortech.foodtogo.model.ProductRegistrationDto;
 import com.fiipractic.fortech.foodtogo.entity.Product;
 import com.fiipractic.fortech.foodtogo.entity.Vendor;
 import com.fiipractic.fortech.foodtogo.repository.ProductRepository;

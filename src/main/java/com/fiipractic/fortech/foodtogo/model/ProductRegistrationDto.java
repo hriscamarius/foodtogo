@@ -1,4 +1,4 @@
-package com.fiipractic.fortech.foodtogo.dto;
+package com.fiipractic.fortech.foodtogo.model;
 
 
 import lombok.Data;

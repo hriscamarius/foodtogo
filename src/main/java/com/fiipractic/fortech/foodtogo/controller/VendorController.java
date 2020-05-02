@@ -1,6 +1,6 @@
 package com.fiipractic.fortech.foodtogo.controller;
 
-import com.fiipractic.fortech.foodtogo.dto.ProductRegistrationDto;
+import com.fiipractic.fortech.foodtogo.model.ProductRegistrationDto;
 import com.fiipractic.fortech.foodtogo.entity.Order;
 import com.fiipractic.fortech.foodtogo.entity.Product;
 import com.fiipractic.fortech.foodtogo.entity.Vendor;
