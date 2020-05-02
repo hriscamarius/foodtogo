@@ -1,12 +1,7 @@
 # foodtogo
 FoodToGO Application / Spring Boot + Data JPA + Hibernate + Security + Web + MySQL + Thymeleaf
 
-Utilizatori/parola: admin/admin
-		    vendor1/123
-		    vendor2/123
-		    customer1/123
-		    customer1/123
-
+Utilizatori/parola: admin/admin, vendor1/123, vendor2/123, customer1/123, customer1/123
 
 Construiți o aplicație pentru plasare de comenzi de produse din restaurante.
 
