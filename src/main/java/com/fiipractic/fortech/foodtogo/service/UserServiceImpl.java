@@ -1,6 +1,7 @@
 package com.fiipractic.fortech.foodtogo.service;
 
 import com.fiipractic.fortech.foodtogo.model.CustomerDto;
+import com.fiipractic.fortech.foodtogo.model.CustomerUpdateForm;
 import com.fiipractic.fortech.foodtogo.model.VendorDto;
 import com.fiipractic.fortech.foodtogo.entity.Customer;
 import com.fiipractic.fortech.foodtogo.entity.Role;
@@ -92,5 +93,10 @@ public class UserServiceImpl implements UserService{
     @Override
     public void deleteById(Long userId) {
         userRepository.deleteById(userId);
+    }
+
+    @Override
+    public void updateCustomer(Long id, CustomerUpdateForm c) {
+        userRepository.updateCustomer(id, c.getUsername(), c.getEmail(), c.getPassword(), c.getName(), c.getDateOfBirth(), c.getPhoneNo(), c.getAddress());
     }
 }

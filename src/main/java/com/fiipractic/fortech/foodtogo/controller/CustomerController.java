@@ -1,21 +1,22 @@
 package com.fiipractic.fortech.foodtogo.controller;
 
 import com.fiipractic.fortech.foodtogo.entity.Customer;
-import com.fiipractic.fortech.foodtogo.model.OrderDetailInfo;
-import com.fiipractic.fortech.foodtogo.model.OrderInfo;
+import com.fiipractic.fortech.foodtogo.model.*;
 import com.fiipractic.fortech.foodtogo.service.OrderServiceImpl;
 import com.fiipractic.fortech.foodtogo.service.UserService;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -27,15 +28,31 @@ public class CustomerController {
     private UserService userService;
     @Autowired
     private OrderServiceImpl orderService;
+    private ModelMapper modelMapper = new ModelMapper();
 
     @GetMapping("/profile")
     public String customerProfile(Model model){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if(!(auth instanceof AnonymousAuthenticationToken)){
             Customer customer = (Customer) userService.findByUsername(auth.getName());
-            model.addAttribute("customer", customer);
+            modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+            CustomerUpdateForm customerUpdateForm = modelMapper.map(customer, CustomerUpdateForm.class);
+            model.addAttribute("customerUpdateForm", customerUpdateForm);
         }
-        return "customer/profile";
+        return "customer/profileCustomer";
+    }
+
+    @PostMapping("/profile")
+    public String updateProfile(@ModelAttribute("customerDto") @Valid CustomerUpdateForm customerUpdateForm, BindingResult result){
+        if(result.hasErrors()){
+            return "customer/profileCustomer";
+        }
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if(!(auth instanceof AnonymousAuthenticationToken)){
+            Customer customer = (Customer) userService.findByUsername(auth.getName());
+            userService.updateCustomer(customer.getId(), customerUpdateForm);
+        }
+        return "redirect:/customer/profile";
     }
 
     @GetMapping("/orderList")

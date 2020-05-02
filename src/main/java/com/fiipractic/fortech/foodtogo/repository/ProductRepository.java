@@ -23,4 +23,5 @@ public interface ProductRepository extends CrudRepository<Product, Long> {
     @Transactional
     @Query("update Product p set p.name=:name, p.category=:category, p.price=:price, p.ingredients=:ingredients where p.id=:id")
     void updateProduct(@Param("id") Long productId, @Param("name") String name, @Param("category") String category, @Param("price") double price, @Param("ingredients") String ingredients);
+
 }
