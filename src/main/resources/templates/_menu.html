@@ -3,12 +3,18 @@
      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5" >
   <a th:href="@{/}">Home</a>
   |
-  <a th:href="@{/productList}">Product List</a>
-  |
-  <a th:href="@{/shoppingCart}">My Cart</a>
-  |
+  <th:block sec:authorize="!isAuthenticated()">
+    <a th:href="@{/productList}">Product List</a>
+    |
+    <a th:href="@{/shoppingCart}">My Cart</a>
+    |
+  </th:block>
   <th:block sec:authorize="hasRole('ROLE_CUSTOMER')">
+    <a th:href="@{/productList}">Product List</a>
+    |
     <a th:href="@{/customer/orderList}">My Orders</a>
+    |
+    <a th:href="@{/shoppingCart}">My Cart</a>
     |
   </th:block>
   <th:block sec:authorize="hasRole('ROLE_VENDOR')">

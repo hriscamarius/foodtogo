@@ -195,7 +195,7 @@ public class MainController {
 
     @PostMapping("/shoppingCartCustomer")
     public String shoppingCartCustomerSave(HttpServletRequest request, Model model,
-                                           @ModelAttribute("customerForm") @Validated CustomerForm customerForm,
+                                           @ModelAttribute("customerForm") @Valid CustomerForm customerForm,
                                            BindingResult result,
                                            final RedirectAttributes redirectAttributes) {
 
