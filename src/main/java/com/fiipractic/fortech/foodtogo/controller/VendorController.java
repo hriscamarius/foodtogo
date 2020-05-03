@@ -1,15 +1,14 @@
 package com.fiipractic.fortech.foodtogo.controller;
 
-import com.fiipractic.fortech.foodtogo.model.ProductRegistrationDto;
+import com.fiipractic.fortech.foodtogo.model.*;
 import com.fiipractic.fortech.foodtogo.entity.Order;
 import com.fiipractic.fortech.foodtogo.entity.Product;
 import com.fiipractic.fortech.foodtogo.entity.Vendor;
-import com.fiipractic.fortech.foodtogo.model.OrderDetailInfo;
-import com.fiipractic.fortech.foodtogo.model.OrderInfo;
 import com.fiipractic.fortech.foodtogo.service.OrderServiceImpl;
 import com.fiipractic.fortech.foodtogo.service.ProductServiceImpl;
 import com.fiipractic.fortech.foodtogo.service.UserServiceImpl;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -39,9 +38,24 @@ public class VendorController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if(!(auth instanceof AnonymousAuthenticationToken)){
             Vendor vendor = (Vendor) userService.findByUsername(auth.getName());
-            model.addAttribute("vendor", vendor);
+            modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+            VendorUpdateForm vendorUpdateForm = modelMapper.map(vendor, VendorUpdateForm.class);
+            model.addAttribute("vendorUpdateForm", vendorUpdateForm);
         }
-        return "vendor/profile";
+        return "vendor/profileVendor";
+    }
+
+    @PostMapping("/profile")
+    public String updateProfile(@ModelAttribute("vendorUpdateForm") @Valid VendorUpdateForm vendorUpdateForm, BindingResult result){
+        if(result.hasErrors()){
+            return "customer/profileCustomer";
+        }
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if(!(auth instanceof AnonymousAuthenticationToken)){
+            Vendor vendor = (Vendor) userService.findByUsername(auth.getName());
+            userService.updateVendor(vendor.getId(), vendorUpdateForm);
+        }
+        return "redirect:/vendor/profile";
     }
 
     @ModelAttribute("productRegistrationDto")

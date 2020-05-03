@@ -7,6 +7,7 @@ import com.fiipractic.fortech.foodtogo.entity.Customer;
 import com.fiipractic.fortech.foodtogo.entity.Role;
 import com.fiipractic.fortech.foodtogo.entity.User;
 import com.fiipractic.fortech.foodtogo.entity.Vendor;
+import com.fiipractic.fortech.foodtogo.model.VendorUpdateForm;
 import com.fiipractic.fortech.foodtogo.repository.RoleRepository;
 import com.fiipractic.fortech.foodtogo.repository.UserRepository;
 import org.modelmapper.ModelMapper;
@@ -98,7 +99,14 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public void updateCustomer(Long id, CustomerUpdateForm c) {
-        userRepository.updateCustomer(id, c.getUsername(), c.getEmail(), passwordEncoder.encode(c.getPassword()), c.getName(), c.getDateOfBirth(), c.getPhoneNo(), c.getAddress());
+        userRepository.updateCustomer(id, c.getUsername(), c.getEmail(), passwordEncoder.encode(c.getPassword()), c.getName(),
+                c.getDateOfBirth(), c.getPhoneNo(), c.getAddress());
+    }
+
+    @Override
+    public void updateVendor(Long id, VendorUpdateForm v) {
+        userRepository.updateVendor(id, v.getUsername(), v.getEmail(), passwordEncoder.encode(v.getPassword()), v.getRestaurantName(),
+                v.getSpecificRestaurant(), v.getPhoneNo(), v.getAddress());
     }
 
     @Override
