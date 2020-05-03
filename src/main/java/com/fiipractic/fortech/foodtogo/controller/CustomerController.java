@@ -43,7 +43,7 @@ public class CustomerController {
     }
 
     @PostMapping("/profile")
-    public String updateProfile(@ModelAttribute("customerDto") @Valid CustomerUpdateForm customerUpdateForm, BindingResult result){
+    public String updateProfile(@ModelAttribute("customerUpdateForm") @Valid CustomerUpdateForm customerUpdateForm, BindingResult result){
         if(result.hasErrors()){
             return "customer/profileCustomer";
         }

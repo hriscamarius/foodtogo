@@ -1,5 +1,6 @@
 package com.fiipractic.fortech.foodtogo.controller;
 
+import com.fiipractic.fortech.foodtogo.entity.Role;
 import com.fiipractic.fortech.foodtogo.model.ProductRegistrationDto;
 import com.fiipractic.fortech.foodtogo.entity.Product;
 import com.fiipractic.fortech.foodtogo.entity.User;
@@ -8,6 +9,7 @@ import com.fiipractic.fortech.foodtogo.model.OrderInfo;
 import com.fiipractic.fortech.foodtogo.service.OrderServiceImpl;
 import com.fiipractic.fortech.foodtogo.service.ProductServiceImpl;
 import com.fiipractic.fortech.foodtogo.service.UserService;
+import org.modelmapper.Converters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,6 +20,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Collection;
 import java.util.List;
 
 @Controller
@@ -92,7 +95,14 @@ public class AdminController {
 
     @GetMapping("/deleteUser/{userId}")
     public String deleteUser(@PathVariable Long userId){
-        userService.deleteById(userId);
+            User user = userService.findById(userId);
+            Collection<Role> roles = user.getRoles();
+            for (Role role: roles) {
+                if(!role.getName().equals(Role.ADMIN)){
+                    userService.deleteById(userId);
+                }
+            }
+
         return "redirect:/admin/users";
     }
 

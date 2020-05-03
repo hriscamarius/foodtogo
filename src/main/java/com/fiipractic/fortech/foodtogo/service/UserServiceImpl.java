@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -97,6 +98,16 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public void updateCustomer(Long id, CustomerUpdateForm c) {
-        userRepository.updateCustomer(id, c.getUsername(), c.getEmail(), c.getPassword(), c.getName(), c.getDateOfBirth(), c.getPhoneNo(), c.getAddress());
+        userRepository.updateCustomer(id, c.getUsername(), c.getEmail(), passwordEncoder.encode(c.getPassword()), c.getName(), c.getDateOfBirth(), c.getPhoneNo(), c.getAddress());
+    }
+
+    @Override
+    public User findById(Long userId) {
+        Optional<User> userOptional = userRepository.findById(userId);
+        User user = null;
+        if(userOptional.isPresent()){
+           user = userOptional.get();
+        }
+        return user;
     }
 }
