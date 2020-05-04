@@ -86,22 +86,26 @@ public class OrderServiceImpl {
     }
 
     public List<OrderDetailInfo> listOrderDetailInfos(Long orderId) {
-        List<OrderDetail> orderDetails = orderDetailRepository.findAllByOrderId(orderId);
-        List<OrderDetailInfo> orderDetailInfos = new ArrayList<>();
-        for (OrderDetail orderDetail: orderDetails) {
-            OrderDetailInfo orderDetailInfo = new OrderDetailInfo();
-            orderDetailInfo.setId(orderDetail.getId());
-            orderDetailInfo.setProductId(orderDetail.getProduct().getId());
-            orderDetailInfo.setProductName(orderDetail.getProduct().getName());
-            orderDetailInfo.setQuanity(orderDetail.getQuantity());
-            orderDetailInfo.setPrice(orderDetail.getPrice());
-            orderDetailInfo.setAmount(orderDetail.getAmount());
-            orderDetailInfos.add(orderDetailInfo);
+        List<OrderDetail> orderDetailList = orderDetailRepository.findAllByOrderId(orderId);
+        List<OrderDetailInfo> orderDetailInfoList = new ArrayList<>();
+        if(!orderDetailList.isEmpty()){
+            for (OrderDetail orderDetail: orderDetailList) {
+                if(productRepository.findById(orderDetail.getProduct().getId()).isPresent()){
+                    OrderDetailInfo orderDetailInfo = new OrderDetailInfo();
+                    orderDetailInfo.setId(orderDetail.getId());
+                    orderDetailInfo.setProductId(orderDetail.getProduct().getId());
+                    orderDetailInfo.setProductName(orderDetail.getProduct().getName());
+                    orderDetailInfo.setQuanity(orderDetail.getQuantity());
+                    orderDetailInfo.setPrice(orderDetail.getPrice());
+                    orderDetailInfo.setAmount(orderDetail.getAmount());
+                    orderDetailInfoList.add(orderDetailInfo);
+                }
+            }
         }
-        return orderDetailInfos;
+        return orderDetailInfoList;
     }
 
-    public List<OrderInfo> findAllOrderInfo(){
+    public List<OrderInfo> findMyOrders(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByUsername(auth.getName());
         List<Order> orders = null;
@@ -126,7 +130,9 @@ public class OrderServiceImpl {
             orderInfo.setCustomerAddress(order.getCustomerAddress());
             orderInfo.setCustomerEmail(order.getCustomerEmail());
             orderInfo.setCustomerPhone(order.getCustomerPhone());
-            orderInfo.setRestaurantName(order.getVendor().getRestaurantName());
+            if(order.getVendor()!=null){
+                orderInfo.setRestaurantName(order.getVendor().getRestaurantName());
+            }else {orderInfo.setRestaurantName("Not availabe");}
             orderInfos.add(orderInfo);
         }
        return orderInfos;
@@ -146,7 +152,9 @@ public class OrderServiceImpl {
             orderInfo.setCustomerAddress(order.getCustomerAddress());
             orderInfo.setCustomerEmail(order.getCustomerEmail());
             orderInfo.setCustomerPhone(order.getCustomerPhone());
-            orderInfo.setRestaurantName(order.getVendor().getRestaurantName());
+            if(order.getVendor()!=null){
+                orderInfo.setRestaurantName(order.getVendor().getRestaurantName());
+            }else {orderInfo.setRestaurantName("Not availabe");}
             orderInfos.add(orderInfo);
         }
         return orderInfos;
@@ -164,7 +172,9 @@ public class OrderServiceImpl {
         orderInfo.setCustomerAddress(order.getCustomerAddress());
         orderInfo.setCustomerEmail(order.getCustomerEmail());
         orderInfo.setCustomerPhone(order.getCustomerPhone());
-        orderInfo.setRestaurantName(order.getVendor().getRestaurantName());
+        if(order.getVendor()!=null){
+            orderInfo.setRestaurantName(order.getVendor().getRestaurantName());
+        }else {orderInfo.setRestaurantName("Not availabe");}
         return orderInfo;
     }
 

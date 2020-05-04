@@ -25,11 +25,7 @@
     <th:block sec:authorize="isAuthenticated()">
       <th:block sec:authorize ="hasRole('ROLE_VENDOR')">
         <a class="navi-item" th:href="@{/vendor/order(orderId=${orderInfo.id},status='PENDING')}">Change Status to PENDING</a>
-      </th:block>
-      <th:block sec:authorize ="hasRole('ROLE_VENDOR')">
         <a class="navi-item" th:href="@{/vendor/order(orderId=${orderInfo.id},status='IN_PROGRESS')}">Change Status to IN_PROGRESS</a>
-      </th:block>
-      <th:block sec:authorize ="hasRole('ROLE_VENDOR')">
         <a class="navi-item" th:href="@{/vendor/order(orderId=${orderInfo.id},status='DELIVERED')}">Change Status to DELIVERED</a>
       </th:block>
     </th:block>

@@ -132,7 +132,7 @@ public class VendorController {
 
     @GetMapping("/orderList")
     public String vendorOrders(Model model) {
-        List<OrderInfo> orderInfoList = orderService.findAllOrderInfo();
+        List<OrderInfo> orderInfoList = orderService.findMyOrders();
         model.addAttribute("orderInfoList", orderInfoList);
         return "orderList";
     }

@@ -57,7 +57,7 @@ public class CustomerController {
 
     @GetMapping("/orderList")
     public String customerOrders(Model model) {
-        List<OrderInfo> orderInfoList = orderService.findAllOrderInfo();
+        List<OrderInfo> orderInfoList = orderService.findMyOrders();
         model.addAttribute("orderInfoList", orderInfoList);
         return "orderList";
     }
@@ -72,8 +72,10 @@ public class CustomerController {
             return "redirect:/customer/orderList";
         }
         List<OrderDetailInfo> details = orderService.listOrderDetailInfos(orderId);
-        orderInfo.setDetails(details);
-        model.addAttribute("orderInfo", orderInfo);
+        if(details!=null){
+            orderInfo.setDetails(details);
+            model.addAttribute("orderInfo", orderInfo);
+        }
         return "order";
     }
 }

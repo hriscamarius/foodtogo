@@ -30,18 +30,16 @@
     </div>
     <div style="clear: both"></div>
     <input class="button-update-sc" type="submit" value="Update Quantity"/>
+    <a class="navi-item" th:href="@{/productList}">Continue Buy</a>
     <th:block sec:authorize="!isAuthenticated()">
-      <a class="navi-item" th:href="@{/shoppingCartCustomer}">Enter Customer Info</a>
+      <a class="navi-item" th:href="@{/shoppingCartCustomer}">Next to enter customer info</a>
     </th:block>
     <th:block sec:authorize="isAuthenticated()">
-      <th:block sec:authorize ="!hasRole('ROLE_VENDOR')">
-        <a class="navi-item" th:href="@{/shoppingCartCustomer}">Go to Customer Info</a>
-      </th:block>
-      <th:block sec:authorize ="hasRole('ROLE_VENDOR')">
-        <a class="navi-item" th:href="@{/shoppingCartCustomer}">Enter Customer Info</a>
+      <th:block sec:authorize ="hasRole('ROLE_CUSTOMER')">
+        <a class="navi-item" th:href="@{/shoppingCartCustomer}">Next to your customer info</a>
       </th:block>
     </th:block>
-    <a class="navi-item" th:href="@{/productList}">Continue Buy</a></form>
+  </form>
 </th:block>
 <th:block th:include="/_footer"> </th:block>
 </body>
