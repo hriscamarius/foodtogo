@@ -18,7 +18,7 @@ public class CustomerDto {
 
     @Length(min = 5, message = "*Your user name must have at least 5 characters")
     @NotEmpty(message = "Please provide a username")
-    @Pattern(regexp = "[A-Za-z0-9_]+")
+    @Pattern(regexp = "[A-Za-z0-9_]+", message = "Invalid username")
     private String username;
     @Email(message = "*Please provide a valid Email")
     @NotEmpty(message = "Please provide an Email")
@@ -37,6 +37,7 @@ public class CustomerDto {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date dateOfBirth;
     @NotEmpty(message = "Please provide a Phone No")
+    @Pattern(regexp = "(\\+\\d{1})?\\d{10}", message = "Invalid phone no")
     private String phoneNo;
     @NotEmpty(message = "Please provide an Address")
     private String address;

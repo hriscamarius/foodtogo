@@ -5,6 +5,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
 import java.util.Date;
 
 @Data
@@ -22,6 +23,7 @@ public class CustomerUpdateForm {
     private Date dateOfBirth;
     @NotEmpty(message = "Phone No cannot be empty")
     private String phoneNo;
+    @Pattern(regexp = "(\\+\\d{1})?\\d{10}", message = "Invalid phone no")
     @NotEmpty(message = "Address cannot be empty")
     private String address;
 }

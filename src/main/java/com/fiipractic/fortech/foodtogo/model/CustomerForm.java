@@ -5,10 +5,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.NumberFormat;
 
-import javax.validation.constraints.Digits;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.*;
 
 @Data
 @NoArgsConstructor
@@ -23,7 +20,7 @@ public class CustomerForm {
     @NotEmpty(message = "Please provide an Email")
     private String email;
     @NotEmpty(message = "Please provide a Phone No")
-    @Min(10)
+    @Pattern(regexp = "(\\+\\d{1})?\\d{10}", message = "Invalid phone no")
     private String phoneNo;
     private boolean valid;
 

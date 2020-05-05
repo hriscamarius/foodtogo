@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
 
 @Data
 public class VendorUpdateForm {
@@ -19,6 +20,7 @@ public class VendorUpdateForm {
     @NotEmpty(message = "Please provide a Specific Restaurant")
     private String specificRestaurant;
     @NotEmpty(message = "Please provide a Phone No")
+    @Pattern(regexp = "(\\+\\d{1})?\\d{10}", message = "Invalid phone no")
     private String phoneNo;
     @NotEmpty(message = "Please provide an Address")
     private String address;
