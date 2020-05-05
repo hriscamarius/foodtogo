@@ -9,7 +9,7 @@
 <th:block th:include="/_header"> </th:block>
 <th:block th:include="/_menu"> </th:block>
 <div class="page-title">Edit Profile</div>
-<form method="POST" th:object="${vendorUpdateForm}" th:action="@{/vendor/profile}">
+<form method="POST" th:object="${customerUpdateForm}" th:action="@{|/admin/editCustomer/${userId}|}">
   <table>
     <tr>
       <td>Username</td>
@@ -26,14 +26,14 @@
       <td><span class="error-message" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">..</span></td>
     </tr>
     <tr>
-      <td>Restaurant Name *</td>
-      <td><input th:field="*{restaurantName}"/></td>
-      <td><span class="error-message" th:if="${#fields.hasErrors('restaurantName')}" th:errors="*{restaurantName}">..</span></td>
+      <td>Name *</td>
+      <td><input th:field="*{name}"/></td>
+      <td><span class="error-message" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">..</span></td>
     </tr>
     <tr>
-      <td>Specific Restaurant *</td>
-      <td><input th:field="*{specificRestaurant}"/></td>
-      <td><span class="error-message" th:if="${#fields.hasErrors('specificRestaurant')}" th:errors="*{specificRestaurant}">..</span></td>
+      <td>Date of birth *</td>
+      <td><input type="date" th:field="*{dateOfBirth}"/></td>
+      <td><span class="error-message" th:if="${#fields.hasErrors('dateOfBirth')}" th:errors="*{dateOfBirth}">..</span></td>
     </tr>
     <tr>
       <td>PhoneNo *</td>
@@ -46,7 +46,7 @@
       <td><span class="error-message" th:if="${#fields.hasErrors('address')}" th:errors="*{address}">..</span></td>
     </tr>
     <tr>
-      <td>&nbsp;</td>
+      <td></td>
       <td><input type="submit" value="Submit"/> <input type="reset" value="Reset"/></td>
     </tr>
   </table>

@@ -8,13 +8,14 @@
 <body>
 <th:block th:include="/_header"> </th:block>
 <th:block th:include="/_menu"> </th:block>
-<div class="page-title">Edit Product</div>
+<div class="page-title">Edit Profile</div>
 <form method="POST" th:object="${customerUpdateForm}" th:action="@{/customer/profile}">
   <table>
     <tr>
-      <td>Username *</td>
-      <td><input th:field="*{username}"/></td>
-      <td><span class="error-message" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">..</span></td>
+    <tr>
+      <td>Username</td>
+      <td><span th:utext="${username}"></span></td>
+    </tr>
     </tr>
     <tr>
       <td>Email *</td>

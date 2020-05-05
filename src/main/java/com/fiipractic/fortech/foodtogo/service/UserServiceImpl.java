@@ -99,13 +99,13 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public void updateCustomer(Long id, CustomerUpdateForm c) {
-        userRepository.updateCustomer(id, c.getUsername(), c.getEmail(), passwordEncoder.encode(c.getPassword()), c.getName(),
+        userRepository.updateCustomer(id, c.getEmail(), passwordEncoder.encode(c.getPassword()), c.getName(),
                 c.getDateOfBirth(), c.getPhoneNo(), c.getAddress());
     }
 
     @Override
     public void updateVendor(Long id, VendorUpdateForm v) {
-        userRepository.updateVendor(id, v.getUsername(), v.getEmail(), passwordEncoder.encode(v.getPassword()), v.getRestaurantName(),
+        userRepository.updateVendor(id, v.getEmail(), passwordEncoder.encode(v.getPassword()), v.getRestaurantName(),
                 v.getSpecificRestaurant(), v.getPhoneNo(), v.getAddress());
     }
 
@@ -117,5 +117,10 @@ public class UserServiceImpl implements UserService{
            user = userOptional.get();
         }
         return user;
+    }
+
+    @Override
+    public boolean existsByUsername(String username) {
+        return userRepository.existsByUsername(username);
     }
 }

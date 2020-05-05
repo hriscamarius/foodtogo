@@ -41,6 +41,7 @@ public class VendorController {
             modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
             VendorUpdateForm vendorUpdateForm = modelMapper.map(vendor, VendorUpdateForm.class);
             model.addAttribute("vendorUpdateForm", vendorUpdateForm);
+            model.addAttribute("username", vendor.getUsername());
         }
         return "vendor/profileVendor";
     }

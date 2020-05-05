@@ -1,7 +1,6 @@
 package com.fiipractic.fortech.foodtogo.model;
 
 import lombok.Data;
-import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.Email;
@@ -11,9 +10,6 @@ import java.util.Date;
 @Data
 public class CustomerUpdateForm {
 
-    @Length(min = 5, message = "*Your user name must have at least 5 characters")
-    @NotEmpty(message = "Please provide a username")
-    private String username;
     @Email(message = "*Please provide a valid Email")
     @NotEmpty(message = "Email cannot be empty")
     private String email;

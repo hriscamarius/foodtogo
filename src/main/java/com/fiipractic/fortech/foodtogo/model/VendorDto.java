@@ -7,6 +7,7 @@ import org.hibernate.validator.constraints.Length;
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
 
 @FieldMatch.List({@FieldMatch(first="password", second = "confirmPassword", message = "The password fields must match"),
         @FieldMatch(first = "email", second = "confirmEmail", message = "The email fields must match")})
@@ -15,6 +16,7 @@ public class VendorDto {
 
     @Length(min = 5, message = "*Your user name must have at least 5 characters")
     @NotEmpty(message = "Please provide a username")
+    @Pattern(regexp = "[A-Za-z0-9_]+")
     private String username;
 
     @Email(message = "*Please provide a valid Email")

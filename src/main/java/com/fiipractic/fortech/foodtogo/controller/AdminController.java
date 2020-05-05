@@ -1,15 +1,13 @@
 package com.fiipractic.fortech.foodtogo.controller;
 
-import com.fiipractic.fortech.foodtogo.entity.Role;
-import com.fiipractic.fortech.foodtogo.model.ProductRegistrationDto;
-import com.fiipractic.fortech.foodtogo.entity.Product;
-import com.fiipractic.fortech.foodtogo.entity.User;
-import com.fiipractic.fortech.foodtogo.model.OrderDetailInfo;
-import com.fiipractic.fortech.foodtogo.model.OrderInfo;
+import com.fiipractic.fortech.foodtogo.entity.*;
+import com.fiipractic.fortech.foodtogo.model.*;
 import com.fiipractic.fortech.foodtogo.service.OrderServiceImpl;
 import com.fiipractic.fortech.foodtogo.service.ProductServiceImpl;
 import com.fiipractic.fortech.foodtogo.service.UserService;
 import org.modelmapper.Converters;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -33,6 +31,7 @@ public class AdminController {
     private UserService userService;
     @Autowired
     private OrderServiceImpl orderService;
+    private ModelMapper modelMapper = new ModelMapper();
 
     @GetMapping("/users")
     public String allUsers(Model model){
@@ -102,7 +101,55 @@ public class AdminController {
                     userService.deleteById(userId);
                 }
             }
+        return "redirect:/admin/users";
+    }
 
+    @GetMapping("/editUser/{userId}")
+    public String showEditUserForm(@PathVariable Long userId, Model model){
+        User user = userService.findById(userId);
+        if(user != null){
+            if(user instanceof Customer){
+                Customer customer = (Customer) user;
+                CustomerUpdateForm customerUpdateForm = modelMapper.map(customer, CustomerUpdateForm.class);
+                model.addAttribute("customerUpdateForm", customerUpdateForm);
+                model.addAttribute("username", customer.getUsername());
+                return "/admin/profileCustomer";
+            }
+            if(user instanceof Vendor){
+                Vendor vendor = (Vendor)user;
+                modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+                VendorUpdateForm vendorUpdateForm = modelMapper.map(vendor, VendorUpdateForm.class);
+                model.addAttribute("vendorUpdateForm", vendorUpdateForm);
+                model.addAttribute("username", vendor.getUsername());
+                return "admin/profileVendor";
+            }
+        }
+        return "redirect:/admin/users";
+    }
+
+    @PostMapping("/editCustomer/{userId}")
+    public String updateCustomerProfile(@ModelAttribute("customerUpdateForm") @Valid CustomerUpdateForm customerUpdateForm,
+                                        @PathVariable Long userId, BindingResult result) {
+        if (result.hasErrors()) {
+            return "admin/profileCustomer";
+        }
+        User user = userService.findById(userId);
+        if(user != null){
+            userService.updateCustomer(user.getId(), customerUpdateForm);
+        }
+        return "redirect:/admin/users";
+    }
+
+    @PostMapping("/editVendor/{userId}")
+    public String updateVendorProfile(@ModelAttribute("vendorUpdateForm") @Valid VendorUpdateForm vendorUpdateForm,
+                                      @PathVariable Long userId, BindingResult result){
+        if(result.hasErrors()){
+            return "admin/profileVendor";
+        }
+        User user = userService.findById(userId);
+        if(user != null){
+            userService.updateVendor(user.getId(), vendorUpdateForm);
+        }
         return "redirect:/admin/users";
     }
 

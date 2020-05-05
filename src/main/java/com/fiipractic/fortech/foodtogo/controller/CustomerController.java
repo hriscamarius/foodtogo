@@ -38,6 +38,7 @@ public class CustomerController {
             modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
             CustomerUpdateForm customerUpdateForm = modelMapper.map(customer, CustomerUpdateForm.class);
             model.addAttribute("customerUpdateForm", customerUpdateForm);
+            model.addAttribute("username", customer.getUsername());
         }
         return "customer/profileCustomer";
     }

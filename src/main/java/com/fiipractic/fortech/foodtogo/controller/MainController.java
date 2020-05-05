@@ -76,8 +76,7 @@ public class MainController {
     @PostMapping("/registerVendor")
     public String registerVendor(@ModelAttribute("vendor") @Valid VendorDto vendorDto,
                                  BindingResult result){
-        User existing = userService.findByUsername(vendorDto.getUsername());
-        if(existing != null) {
+        if(userService.existsByUsername(vendorDto.getUsername())){
             result.rejectValue("username", null, "There is already an account registered with that username");
         }
         if(result.hasErrors()){
@@ -100,8 +99,8 @@ public class MainController {
     @PostMapping("/registerCustomer")
     public String registerCustomer(@ModelAttribute("customer") @Valid CustomerDto customerDto,
                                  BindingResult result){
-        User existing = userService.findByUsername(customerDto.getUsername());
-        if(existing != null) {
+
+        if(userService.existsByUsername(customerDto.getUsername())){
             result.rejectValue("username", null, "There is already an account registered with that username");
         }
         if(result.hasErrors()){

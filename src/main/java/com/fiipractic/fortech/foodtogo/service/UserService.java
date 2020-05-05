@@ -20,6 +20,5 @@ public interface UserService extends UserDetailsService {
     void updateCustomer(Long id, CustomerUpdateForm customerUpdateForm);
     void updateVendor(Long id, VendorUpdateForm vendorUpdateForm);
     User findById(Long userId);
-
-
+    boolean existsByUsername(String username);
 }
